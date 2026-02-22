@@ -9,8 +9,12 @@ from dotenv import load_dotenv
 from flask import Flask
 from threading import Thread
 
-load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
+
+if not TOKEN:
+    raise ValueError("DISCORD_TOKEN is not set!")
+
+TOKEN = TOKEN.strip()
 
 # --- Render 포트 바인딩(필수) ---
 app = Flask(__name__)
@@ -199,4 +203,5 @@ if not TOKEN:
 
 
 client.run(TOKEN)
+
 
