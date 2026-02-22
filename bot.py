@@ -6,8 +6,25 @@ import discord
 from discord import app_commands
 from dotenv import load_dotenv
 
+from flask import Flask
+from threading import Thread
+
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
+
+# --- Render 포트 바인딩(필수) ---
+app = Flask(__name__)
+
+@app.get("/")
+def home():
+    return "OK"
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
+
+Thread(target=run_web, daemon=True).start()
+# --- /Render 포트 바인딩 ---
 
 DB_PATH = "sigma.db"
 DAILY_REWARD = 100_000  # 출석 보상
@@ -179,5 +196,6 @@ async def ping(interaction: discord.Interaction):
 
 if not TOKEN:
     raise RuntimeError("DISCORD_TOKEN이 .env에 없습니다.")
+
 
 client.run(TOKEN)
